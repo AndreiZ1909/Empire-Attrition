@@ -1,0 +1,54 @@
+/* Classes for dice images hovering */
+.die-image{
+	position: absolute;
+    object-fit: contain;
+    width: 150%;
+    height: 150%;
+    z-index: 1;
+
+	filter:
+	    drop-shadow(2px 4px 7px rgba(0, 0, 0, 0.72))
+	    drop-shadow(5px 9px 18px rgba(0, 0, 0, 0.40));
+
+    pointer-events: none;
+	user-select: none;
+}
+.die-image-chosen{
+	transform: scale(1.4);
+}
+
+.attack-span{
+	font-family: Arial, sans-serif;
+	font-size: 1vw;
+	font-weight: 500;
+	color: rgb(20, 23, 28);
+	user-select: none;
+}
+
+/* Animation of anchor cells for attack results: timing to be aligned with TurnSystem.delayedAttack() */
+.anchor-cell-attack{
+	transform: scale(2.25);
+	transition: transform 0.6s ease;
+}
+
+/* Highlighting adjacent non-friendly regions */
+.highlight-adjacent-region-animation{
+	animation: highlight-adjacent-region-animation-script 1.7s linear infinite ;
+}
+@keyframes highlight-adjacent-region-animation-script{
+	0%, 100%{ 
+		filter: 
+			brightness(1)
+			saturate(1)
+    }
+	25%{ 
+		filter:
+            brightness(1.6)
+            saturate(2)
+    }
+	75%{ 
+		filter:
+            brightness(.25)
+            saturate(.33)
+	}
+}

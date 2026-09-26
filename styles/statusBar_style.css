@@ -1,0 +1,254 @@
+/* Consider OFL license of the font*/
+@font-face {
+    font-family: 'Rubik';
+    src: url('../styles/fonts/Rubik-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+/* Status Bar basic style */
+.status-bar-tile{
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	
+	position: absolute;
+	top: 0.75vh; /* ((#StatusBar.height - .status-bar-tile.height)/2 + #GlobalFlex.gap) */
+
+	width: 100%;
+	height: 17vh;
+	padding-bottom: 3px;
+	padding-top: 1.5px;
+	opacity: 0.45;
+	border-radius: 0.68vw;
+	gap: 3px;
+
+	filter: brightness(0.98);
+
+	box-shadow:
+  		inset 0 2px 3px rgba(255, 255, 255, .12),
+   		4px 6px 14px rgba(0, 0, 0, .30);
+}
+/* Transition property set-up of a bar: merged turn-pass and reshuffling */
+.status-bar-tile-transition{
+	transition: 
+		filter 0.8s ease-out,
+		opacity 0.8s ease-out,
+		transform 1.2s ease-in-out;
+}
+/* These classes are needed to highlight current turn's or chosen player bar */
+.status-bar-tile-highlighted{
+    opacity: 1;
+   	filter: brightness(1.06);
+}
+
+/* Status Bars text content */
+.info-container{
+ 	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	gap: 0.5px;
+
+	width: 100%;
+	height: 100%;
+}
+.player-name-info-tile{
+	font-family: Segoe UI, sans-serif;
+	font-size: 1.1vw;
+	font-weight: 700;
+	user-select: none;
+}
+.player-revenue-info-tile{
+	font-family: Segoe UI, sans-serif;
+	font-size: 0.99vw;
+	font-weight: 460;
+	user-select: none;
+}
+.player-strikes-info-tile{
+	font-family: Segoe UI, sans-serif;
+	font-size: 1.03vw;
+	font-weight: 510;
+	user-select: none;
+}
+
+/* Status Bar player names' special contrasting colors */
+.player-name-span-color-0{/* Bordeaux */
+	color: rgb(225, 145, 165);
+}
+.player-name-span-color-1{/* Green */
+	color: rgb(150, 245, 185);
+}
+.player-name-span-color-2{/* Light blue */
+	color: rgb(0, 95, 120);
+}
+.player-name-span-color-3{/* Yellow */
+	color: rgb(110, 85, 20);
+}
+.player-name-span-color-4{/* Deep blue */
+	color: rgb(195, 165, 255);
+}
+.player-name-span-color-5{/* Ivory */
+	color: rgb(55, 60, 72);
+}
+.player-name-span-color-6{/* Orange */
+	color: rgb(255, 185, 95);
+}
+.player-name-span-color-7{/* Pink */
+	color: rgb(120, 45, 80);
+}
+
+/* Status bars main texts color */
+.basic-bar-text-color-0{/* Light */
+	color: rgb(228, 232, 240);
+}
+.basic-bar-text-color-1{/* Dark */
+	color: rgb(45, 50, 60);
+}
+.basic-bar-text-color-2{/* Dark */
+	color: rgb(45, 50, 60);
+}
+.basic-bar-text-color-3{/* Dark */
+	color: rgb(45, 50, 60);
+}
+.basic-bar-text-color-4{/* Light */
+	color: rgb(228, 232, 240);
+}
+.basic-bar-text-color-5{/* Dark */
+	color: rgb(45, 50, 60);
+}
+.basic-bar-text-color-6{/* Dark */
+	color: rgb(45, 50, 60);
+}
+.basic-bar-text-color-7{/* Dark */
+	color: rgb(45, 50, 60);
+}
+.basic-bar-text-color-8{/* Light */
+	color: rgb(228, 232, 240);
+}
+
+
+/* Status Bars hovering tooltip */
+.player-name-area{
+	position: relative;
+}
+.status-bar-to-front{ /* this is a class not for the tooltip itself or playerNameArea, but the whole status bar.
+						 If not assigned, tooltip will be overlaped by other bars after any tranform:transition */
+	z-index: 1000;	
+}
+.player-tooltip{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	visibility: hidden;
+	opacity: 0;
+	position: absolute;
+
+	transition: opacity .13s ease-out;
+	pointer-events: none;
+
+	width: 19vw;
+	height: 23vh;
+	transform: translateY(-14vh);
+	border-radius: 0.7vw;
+	box-shadow:
+	    4px 8px 20px 3px rgba(0, 0, 0, .55),
+    	0 0 24px 4px rgba(80, 120, 255, .15);
+}
+.player-tooltip-visible{
+	visibility: visible;
+	opacity: .95;
+}
+
+.tooltip-table{
+	border-collapse: collapse;
+	border-spacing: 0;
+	table-layout: fixed;
+	width: 98%;
+}
+.tooltip-td{
+	text-align: left;
+	padding: 0.3vh 0.3vw;
+
+	font-family: 'Rubik', sans-serif;
+	line-height: 1.25;
+	font-size: 1.05vw;
+	font-weight: normal;
+	user-select: none;
+}
+.tooltip-left-align{
+	left: 0;
+}
+.tooltip-right-align{
+	right: 0;
+	left: auto;
+}
+
+/* These classes are used for styling EndTurn button*/
+.endturn-button{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	user-select: none;
+
+	font-family: Segoe UI, sans-serif;
+	font-size: 1.03vw;
+	font-weight: 550;
+	color: rgb(180, 215, 200); 	
+	background:
+		linear-gradient(
+			180deg,
+			#59657f,
+			#434e63
+		);
+	border-radius: 0.5vw;
+	padding-bottom: 1.5px;
+
+    transition:
+        transform 120ms ease,
+        filter 120ms ease,
+        box-shadow 120ms ease;
+    
+    cursor: pointer;
+}
+.endturn-button:hover {
+    transform: translateY(-0.14vw);
+    filter: brightness(1.12);
+    box-shadow:
+        0 2px 5px rgba(0, 0, 0, 0.35),
+        0 0 8px rgba(180, 215, 200, 0.18);
+}
+.endturn-button:active{
+    filter: brightness(0.35);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+.endturn-button-invisible{
+	opacity: 0;
+	pointer-events: none;
+}
+/* EndTurn button - highlighting when no actions left within current turn */
+.endturn-button-focus{
+	animation: endturn-button-focus-animation-script 1.25s ease-in-out infinite;
+}
+@keyframes endturn-button-focus-animation-script{
+	0%{ 
+		filter: brightness(1);
+	  }
+	50%{ 
+		filter: brightness(2);
+	  }
+	100%{ 
+		filter: brightness(1);
+  }
+}
+
+/*These classes are used to remove Status Bar of a defeated player*/
+.status-bar-tile-invisible{
+	transition: opacity .5s ease-out;
+	opacity: 0;
+}
+.status-bar-tile-disabled{
+	display: none;
+}

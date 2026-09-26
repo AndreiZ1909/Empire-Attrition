@@ -1,0 +1,37 @@
+/* Main colors of players for cells */
+.player-color-0{/* Bordeaux */
+	border-color: rgba(145, 35, 55, 1);
+	background-color: rgba(145, 35, 55, 1);
+}
+.player-color-1{/* Green */
+	border-color: rgba(45, 185, 110, 1);
+	background-color: rgba(45, 185, 110, 1);
+}
+.player-color-2{/* Light blue */
+	border-color: rgba(60, 215, 255, 1);
+	background-color: rgba(60, 215, 255, 1);
+}
+.player-color-3{/* Yellow */
+	border-color: rgba(239, 200, 42, 1);
+	background-color: rgba(239, 200, 42, 1);
+}
+.player-color-4{/* Deep blue */
+	border-color: rgba(17, 17, 202, 1);
+	background-color: rgba(17, 17, 202, 1);
+}
+.player-color-5{/* Ivory */
+	border-color: rgba(222, 220, 210, 1);
+	background-color: rgba(222, 220, 210, 1);
+}
+.player-color-6{/* Orange */
+	border-color: rgba(240, 123, 5, 1);
+	background-color: rgba(240, 123, 5, 1);
+}
+.player-color-7{/* Pink */
+	border-color: rgba(245, 145, 185, 1);
+	background-color: rgba(245, 145, 185, 1);
+}
+.player-color-8{/* Neutral player */
+	border-color: rgba(90, 96, 108, 1);
+	background-color: rgba(90, 96, 108, 1);
+}

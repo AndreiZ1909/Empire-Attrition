@@ -1,0 +1,112 @@
+/* These classes are used for final stats table */
+#StatsDiv{
+	position: fixed;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+
+	transform: translateY(-1.3vw) scale(.85);
+	pointer-events: none;
+	opacity: 0;
+	
+	width: 70%;
+	height: 75vh;
+
+	background:
+		linear-gradient(
+			135deg,
+			rgba(85, 95, 120, .95),
+			rgba(55, 65, 85, .95)
+		);
+	border: 1.5px solid rgba(150, 170, 220, .25);
+	border-radius: 1.3vw;
+	box-shadow:
+		0 25px 60px rgba(0, 0, 0, .65),
+		0 0 35px rgba(120, 160, 255, .12);
+  	padding-top: 2px;
+ 	padding-bottom: 1.3vw;
+}
+#StatsDiv.open-table{
+	transition: height 1s ease-in-out, opacity 1s ease-in-out;
+	opacity: 1;
+	transform: translateY(-1.3vw)  scale(1);
+	pointer-events: auto;
+}
+
+#WinTitle{
+	font-family: Segoe UI, sans-serif;
+	font-size: 1.85vw;
+	font-weight: 600;
+	letter-spacing: 0.5px;
+	color: rgb(225, 235, 250);
+	user-select: none;
+}
+#StatsTable{
+	border-collapse: collapse;
+	table-layout: fixed;
+	width: 95%;
+	height: 95%;
+}
+
+.stats-table-header-line{
+	font-family: Segoe UI, sans-serif;
+	font-size: 1.45vw;
+	font-weight: 650;
+	color: rgb(205, 215, 230);
+	user-select: none;
+}
+.stats-table-td{
+	text-align: center;
+	vertical-align: middle;
+
+	font-family: Segoe UI, sans-serif;
+	font-size: 1.22vw;
+	font-weight: 520;
+	color: rgb(185,195,210);
+	user-select: none;
+}
+
+#tbody-stats-table tr:nth-child(odd){
+	background-color:
+	rgba(255, 255, 255, .15);
+}
+#tbody-stats-table tr:nth-child(even){
+	background-color:
+	rgba(0, 0, 0, .04);
+}
+
+/* Each player name is painted in its own color */
+.player-name-font{
+	font-family: Segoe UI, sans-serif;
+	font-size: 1.22vw;
+	font-weight: 550;
+}
+
+.player-color-text-0{/* Bordeaux */
+	color: rgba(145, 35, 55, 1);
+}
+.player-color-text-1{/* Green */
+	color: rgba(45, 185, 110, 1);
+}
+.player-color-text-2{/* Light blue */
+	color: rgba(60, 215, 255, 1);
+}
+.player-color-text-3{/* Yellow */
+	color: rgba(239, 200, 42, 1);
+}
+.player-color-text-4{/* Deep blue */
+	color: rgba(17, 17, 202, 1);
+}
+.player-color-text-5{/* Ivory */
+	color: rgba(222, 220, 210, 1);
+}
+.player-color-text-6{/* Orange */
+	color: rgba(240, 123, 5, 1);
+}
+.player-color-text-7{/* Pink */
+	color: rgba(245, 145, 185, 1);
+}
+.player-color-text-8{/* Neutral player */
+	color: black;
+}

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+<title>Empire Attrition</title>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" href="./sources/favicon.png">
+
+<link rel="stylesheet" href="styles/main.css">
+<link rel="stylesheet" href="styles/player_style.css">
+<link rel="stylesheet" href="styles/battle.css">
+<link rel="stylesheet" href="styles/statusBar_style.css">
+<link rel="stylesheet" href="styles/statsTable_style.css">
+<link rel="stylesheet" href="styles/startMenu_style.css">
+</head>
+
+<body class="body-style">
+<div id="GlobalFlex">
+	<div id="GlobalGrid"></div>
+	<div id="StatusBar"></div>
+	<div id="StatsDiv">
+		<h2 id="WinTitle"></h2>
+		<table id="StatsTable">
+			<colgroup>
+		        <col style="width:30%">
+		        <col style="width:25%">
+		        <col style="width:20%">
+		        <col style="width:25%">
+		    </colgroup>
+			<tr class="stats-table-header-line">
+				<th>Player</th>
+				<th>Average Roll</th>
+				<th>Peak Regions</th>
+				<th>Last Round</th>
+			</tr>
+			<tbody id="tbody-stats-table"></tbody>
+		</table>
+	</div>
+	<div id="StartMenu">
+		<h2 id="StartMenuTitle"></h2>
+		<div id="ColorButtonsPane"></div>
+	</div>
+</div>
+
+<script type="module" src="./scripts/Main.js"></script>
+</body>
+</html>

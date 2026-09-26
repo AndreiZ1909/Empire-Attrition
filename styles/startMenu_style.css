@@ -1,0 +1,94 @@
+/* Basic classes and properties */
+#StartMenu{
+	position: fixed;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	overflow:hidden;
+
+	opacity: 1;
+	pointer-events: auto;
+	transition: opacity 1.2s ease-in-out 0.25s, height 1.5s ease-in-out 0.25s;
+	
+	width: 70vw;
+	height: 75vh;
+	transform: translateY(-1.3vw);
+
+	gap: 1.05vw;
+
+	background:
+		linear-gradient(
+			135deg,
+			rgba(85, 95, 120, .9),
+			rgba(55, 65, 85, .9)
+		);
+	border: 1.5px solid rgba(150, 170, 220, .25);
+	border-radius: 1.8vw;
+	box-shadow:
+		0 25px 60px rgba(0, 0, 0, .65),
+		0 0 35px rgba(120, 160, 255, .12);
+  	padding-top: 2px;
+ 	padding-bottom: 5.3vh;
+}
+#StartMenu.close-menu{
+	pointer-events: none;
+	opacity: 0;
+	height: 0;
+}
+
+.start-menu-title{
+	font-family: Segoe UI, sans-serif;
+	font-size: 2.7vw;
+	font-weight: 650;
+	letter-spacing: 0.6px;
+	color: rgb(225, 235, 250);
+
+	transform: translateY(-1.5vh);
+	user-select: none;
+}
+
+#ColorButtonsPane{
+	display: flex;
+	flex-wrap: wrap;
+
+	align-items: center;
+	justify-content: center;
+
+	gap: 5vw;
+	width: 60vw;
+}
+
+/* Classes for buttons */
+.color-choice-button{
+	width: 8vw;
+	height: 8vw;
+
+	border-radius: 1.2vw;
+	border: 2px solid rgba(255, 255, 255, .18);
+
+	cursor: pointer;
+	user-select: none;
+
+	box-shadow:
+		inset 0 1px 3px rgba(255, 255, 255, .18),
+		0 6px 14px rgba(0, 0, 0, .30);
+
+	transition:
+		transform .18s ease,
+		box-shadow .25s ease,
+		border-color .25s ease;
+}
+.color-choice-button:hover{
+	transform: translateY(-2px) scale(1.08);
+
+	border-color: rgba(180,220,255,.55);
+	box-shadow:
+		inset 0 2px 5px rgba(255,255,255,.28),
+		0 10px 22px rgba(0,0,0,.42),
+		0 0 14px rgba(120,210,255,.35);
+}
+.color-choice-button:active{
+	transform: scale(1.07);
+	box-shadow:	inset 0 3px 8px rgba(0, 0, 0, .25);
+}
