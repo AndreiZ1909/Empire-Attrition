@@ -96,7 +96,7 @@ export class TurnSystem{
 		Painter.focusEndTurnButton(currentPlayer, 'OFF');
 
 		AIManager.strikesStatsRefresh();
-		if([4,5].includes(TurnSystem.playersSequence.length)){
+		if([4,5,6].includes(TurnSystem.playersSequence.length)){
 			AIManager.refreshAllies(TurnSystem.playersSequence);
 		}
 
@@ -137,9 +137,9 @@ export class TurnSystem{
 					TurnSystem.roundPlayersPointer = TurnSystem.playersSequence.length - 1;
 				}
 
-				if(TurnSystem.playersSequence.length === 5){ //Setting initial allies
+				if(TurnSystem.playersSequence.length === 6){				//Setting initial allies
 					AIManager.chooseAllies(TurnSystem.playersSequence);
-				}else if(TurnSystem.playersSequence.length < 4){ //Removing all allies
+				}else if(TurnSystem.playersSequence.length < 3){ 			//Removing all allies
 					AIManager.refreshAllies(TurnSystem.playersSequence);
 				}
 			}

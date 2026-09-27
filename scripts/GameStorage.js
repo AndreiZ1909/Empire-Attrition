@@ -1,4 +1,5 @@
 export const GameStorage = {
+	
 	//Game default set-up
 	playersNumber: 8,
 	regionsNumber: 40,

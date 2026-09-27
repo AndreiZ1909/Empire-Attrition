@@ -24,7 +24,8 @@ export class AIManager extends PlayerManager{
         this.diplomaticHistory = new Map();                                 //{player:influence} pairs
         this.dominatingEnemies = new Set();                                 //player instances
         this.ally = null;                                                   //player instance
-        this.focusVictim = null;                                            //player instance        
+        this.focusVictim = null;                                            //player instance
+        this.playerIsDominant = false;      
     }
 
     async processStartTurn(){
@@ -62,6 +63,7 @@ export class AIManager extends PlayerManager{
             this.powerfulNeighbours.clear();
             this.weakNeighbours.clear();   
             this.turnStrikesNumber = 0;
+            this.playerIsDominant = false;
  
             //Rarely Bot's behavior alters completely
             if(Math.random() < 0.02){
@@ -162,6 +164,14 @@ export class AIManager extends PlayerManager{
                 ////Turn-overview rules
                 //Exposure bonus
                 possibleAttacks[i].rating -= this.powerfulNeighbours.size; //[static]
+
+                if(this.playerIsDominant){
+                    if(this.dominatingEnemies.size > 0){
+                        possibleAttacks[i].rating -= 5;  //[static]
+                    }else{
+                        possibleAttacks[i].rating -= 15; //[static]
+                    }
+                }
                 
                 //An attack is safer, if defender player already had their turn within current round
                 if(!this.playersNotActedInCurrentRound.has(possibleAttacks[i].regionDefender.owner) && 
@@ -171,7 +181,7 @@ export class AIManager extends PlayerManager{
 
                 //An attack is safer, if Invader player possesses more strikes within current turn
                 if(TurnSystem.playersSequence.length > 2){
-                    let strikesFactor = AIplayer.strikes - ((this.powerfulNeighbours.size>0 || possibleAttacks[i].regionInvader.owner.regions.length>5) ? (2*this.turnStrikesNumber+(TurnSystem.playersSequence.length>3 ? 0 : -2)) : (this.turnStrikesNumber+1));
+                    let strikesFactor = AIplayer.strikes - ((possibleAttacks[i].regionInvader.owner.regions.length>4 ? 2*this.turnStrikesNumber : this.turnStrikesNumber+3) + (this.powerfulNeighbours.size>0 ? this.turnStrikesNumber : 0));
                     possibleAttacks[i].rating += (AIplayer.strikes !== this.turnStrikesNumber ? strikesFactor : AIplayer.strikes); //[static]
                 }
 
@@ -203,7 +213,7 @@ export class AIManager extends PlayerManager{
                     for(let j=0; j<possibleAttacks[i].regionInvader.adjacentRegions.length; j++){
                         if(possibleAttacks[i].regionInvader.adjacentRegions[j].owner !== GameStorage.players[GameStorage.playersNumber] &&
                             possibleAttacks[i].regionInvader.adjacentRegions[j].owner !== AIplayer){
-                            possibleAttacks[i].rating -= (2-this.behaviorVector[1]); //[prudent]
+                            possibleAttacks[i].rating -= (4-this.behaviorVector[1]); //[prudent]
                             break;
                         }
                     }                 
@@ -260,7 +270,7 @@ export class AIManager extends PlayerManager{
                 if(friendlyRegionsAtTargetCounter > 0){
                     possibleAttacks[i].rating += 2*friendlyRegionsAtTargetCounter; //[static]
                 }else if(!neutralNewNeighbourRegionsExist){
-                    possibleAttacks[i].rating -= 16;
+                    possibleAttacks[i].rating -= (15 + (TurnSystem.playersSequence.length > 4 ? 0 : 10));
                 }
 
                 //Checking whether a successful attack will bring new enemy neighbours
@@ -287,7 +297,7 @@ export class AIManager extends PlayerManager{
                         }
                     }
                     if(invadingNest){
-                        possibleAttacks[i].rating -= 16; //[static]
+                        possibleAttacks[i].rating -= 15; //[static]
                     }
                 }
 
@@ -315,7 +325,7 @@ export class AIManager extends PlayerManager{
                             }
                         }
                     }
-                    possibleAttacks[i].rating -= Math.round(rearguardAttackFactor*(1+this.behaviorVector[3])); //[self-concerned]
+                    possibleAttacks[i].rating -= Math.round(rearguardAttackFactor*(1.5 + 2*this.behaviorVector[3])); //[self-concerned]
                 }
 
                 //Checking how global frontier expands in case the attack is successful
@@ -376,7 +386,7 @@ export class AIManager extends PlayerManager{
                     // alleviating the rule if the defender is much stronger than the Invader AIplayer
                     ((this.powerfulNeighbours.has(possibleAttacks[i].regionDefender.owner) && (possibleAttacks[i].regionDefender.owner.regions.length<1.5*possibleAttacks[i].regionInvader.owner.regions.length))
                     || (!this.powerfulNeighbours.has(possibleAttacks[i].regionDefender.owner) && possibleAttacks[i].regionDefender.owner.regions.length < 5))){
-                    possibleAttacks[i].rating -= (4+this.behaviorVector[5]); //[tactical]
+                    possibleAttacks[i].rating -= (8 + 2*this.behaviorVector[5]); //[tactical]
                 }else if(this.powerfulNeighbours.size>0 && AIplayer.regions.length===1){
                     possibleAttacks[i].rating += 8; // [static]
                 }
@@ -394,14 +404,15 @@ export class AIManager extends PlayerManager{
                         && possibleAttacks[i].regionInvader.adjacentRegions[j].diceNumber > strongestNeighbourDiceNumber){
                             strongestNeighbourDiceNumber = possibleAttacks[i].regionInvader.adjacentRegions[j].diceNumber;
                     }
-                    if(possibleAttacks[i].regionInvader.diceNumber < possibleAttacks[i].regionInvader.adjacentRegions[j].diceNumber){
+                    if(possibleAttacks[i].regionInvader.diceNumber < possibleAttacks[i].regionInvader.adjacentRegions[j].diceNumber &&
+                       possibleAttacks[i].regionInvader.adjacentRegions[j].owner !== this.ally){
                         strongestNeighbourDiceNumber = 7;
                         break;
                     }
                 }
                 if(possibleAttacks[i].regionDefender.diceNumber === strongestNeighbourDiceNumber && strongestNeighbourDiceNumber > 1 &&
                     possibleAttacks[i].regionDefender.owner !== GameStorage.players[GameStorage.playersNumber] && possibleAttacks[i].regionDefender.owner!== this.ally){
-                    possibleAttacks[i].rating += 2*strongestNeighbourDiceNumber; //[static]
+                    possibleAttacks[i].rating += 2+3*strongestNeighbourDiceNumber; //[static]
                 }
 
                 //Focusing one enemy once player has reached certain dominance
@@ -428,7 +439,7 @@ export class AIManager extends PlayerManager{
                 }
 
                 //Checking whether this enemy may be defeated during this attack, and if it makes to save him from economical perspective
-                 if(possibleAttacks[i].regionDefender.owner !== GameStorage.players[GameStorage.playersNumber] && TurnSystem.playersSequence.length < 5){
+                if(possibleAttacks[i].regionDefender.owner !== GameStorage.players[GameStorage.playersNumber] && TurnSystem.playersSequence.length < 5){
                     if(possibleAttacks[i].regionDefender.owner.regions.length === 1 && possibleAttacks[i].regionDefender.diceNumber < possibleAttacks[i].regionInvader.diceNumber){
                         let usefulPuppet = true;
                         if(this.powerfulNeighbours.size>0){
@@ -444,33 +455,31 @@ export class AIManager extends PlayerManager{
                 }
 
                 //Prioritizing those enemies, who turtled and didn't attack in the past round
-                if(possibleAttacks[i].regionDefender.owner !== GameStorage.players[GameStorage.playersNumber] && 
-                    AIplayer.regions.length > 3 && AIplayer.strikes > 1 && possibleAttacks[i].regionDefender.owner!== this.ally){
-                    if((AIManager.strikesCompletedStats.get(possibleAttacks[i].regionDefender.owner)[0]<1 || AIManager.strikesCompletedStats.get(possibleAttacks[i].regionDefender.owner)[2]<2)
-                        && (possibleAttacks[i].regionDefender.diceNumber-possibleAttacks[i].regionInvader.diceNumber)<2 && possibleAttacks[i].regionDefender.owner.regions.length>1){
+                if(possibleAttacks[i].regionDefender.owner !== GameStorage.players[GameStorage.playersNumber] && AIplayer.regions.length > 2 && AIplayer.strikes > 1
+                    && possibleAttacks[i].regionDefender.owner!== this.ally){
+                    if((AIManager.strikesCompletedStats.get(possibleAttacks[i].regionDefender.owner)[0]<2 || AIManager.strikesCompletedStats.get(possibleAttacks[i].regionDefender.owner)[2]<2)
+                        && (possibleAttacks[i].regionDefender.diceNumber-possibleAttacks[i].regionInvader.diceNumber)<3 && possibleAttacks[i].regionDefender.owner.regions.length>3){
                         if(this.weakNeighbours.size === 0){
-                            let defenderActivityStatus = AIManager.strikesCompletedStats.get(possibleAttacks[i].regionDefender.owner)[0] + AIManager.strikesCompletedStats.get(possibleAttacks[i].regionDefender.owner)[2];
-                            possibleAttacks[i].rating += (defenderActivityStatus === 0 ? 8 : 0) + (defenderActivityStatus>0 && AIManager.strikesCompletedStats.get(possibleAttacks[i].regionDefender.owner)[2] === 0 ? 8 : 0);
+                            possibleAttacks[i].rating += Math.round(3.5*(Math.max(2-AIManager.strikesCompletedStats.get(possibleAttacks[i].regionDefender.owner)[0], 0) + Math.max(2-AIManager.strikesCompletedStats.get(possibleAttacks[i].regionDefender.owner)[2], 0)));
                         }
                     }
                 }
                 //Once a weak neighbour found, disabling turtle rule to focus him
                 if(possibleAttacks[i].regionDefender.owner !== GameStorage.players[GameStorage.playersNumber]){
                     if(this.weakNeighbours.has(possibleAttacks[i].regionDefender.owner) && possibleAttacks[i].regionDefender.owner !== this.ally){
-                        possibleAttacks[i].rating += 20;
+                        possibleAttacks[i].rating += 25;
                     }
                 }
 
                 //Prioritizing those attacks, which focus dominating enemy players
                 if(this.dominatingEnemies.size > 0 && AIplayer.strikes > 1 && TurnSystem.playersSequence.length > 2){
                     if(this.dominatingEnemies.has(possibleAttacks[i].regionDefender.owner) && possibleAttacks[i].regionDefender.owner!== this.ally){
-                        possibleAttacks[i].rating += 10 + 4*this.behaviorVector[5]; //[tactical]
+                        possibleAttacks[i].rating += (TurnSystem.playersSequence.length > 4 ? 4+possibleAttacks[i].regionDefender.owner.regions.length : 2*(possibleAttacks[i].regionDefender.owner.regions.length-4)) + 2*this.behaviorVector[5]; //[tactical]
                     }else if(possibleAttacks[i].regionDefender.owner !== GameStorage.players[GameStorage.playersNumber] &&
-                            (!this.dominatingEnemies.has(possibleAttacks[i].regionDefender.owner) && this.behaviorVector[5] === 2)){
-                        possibleAttacks[i].rating -= 10; //[tactical]
+                        (!this.dominatingEnemies.has(possibleAttacks[i].regionDefender.owner) && this.behaviorVector[5] === 2)){
+                        possibleAttacks[i].rating -= 12; //[tactical]
                     }
                 }
-
 
                 //Preparation for special attack case to bother castled status, if no other attack options are worthy
                 if([2,3].includes(possibleAttacks[i].regionInvader.diceNumber) && possibleAttacks[i].regionDefender.castled && 
@@ -526,7 +535,7 @@ export class AIManager extends PlayerManager{
                     }
 
                     //Don't hold fully armored regions
-                    if(!decision.verdict && this.fullDiceInvaders.length>0 && Math.random() < 0.7){
+                    if(!decision.verdict && this.fullDiceInvaders.length>0 && Math.random() < 0.75){
                         let localRandomIndexSecond = Math.floor(Math.random()*this.fullDiceInvaders.length);
 
                         if(this.fullDiceInvaders[localRandomIndexSecond][0].regionDefender.owner === GameStorage.players[GameStorage.playersNumber]){
@@ -535,24 +544,26 @@ export class AIManager extends PlayerManager{
                             decision.regionInvader = this.fullDiceInvaders[localRandomIndexSecond][0].regionInvader;
                             decision.regionDefender = this.fullDiceInvaders[localRandomIndexSecond][0].regionDefender;
                         }else{
-                            if(this.fullDiceInvaders[localRandomIndexSecond][1]){
-                                if(!AIManager.exploreEmpireIntegrityRegionMinus(this.fullDiceInvaders[localRandomIndexSecond][0].regionDefender.owner, this.fullDiceInvaders[localRandomIndexSecond][0].regionDefender)){
-                                    //Attacking Enemy player who's empire is non-integrated, and will NOT become integrated even if the invasion is successful
+                            if((this.dominatingEnemies.size > 0 && (this.dominatingEnemies.has(this.fullDiceInvaders[localRandomIndexSecond][0].regionDefender.owner) || Math.random()<0.25))
+                                || this.dominatingEnemies.size === 0){
+                               if(this.fullDiceInvaders[localRandomIndexSecond][1]){
+                                    if(!AIManager.exploreEmpireIntegrityRegionMinus(this.fullDiceInvaders[localRandomIndexSecond][0].regionDefender.owner, this.fullDiceInvaders[localRandomIndexSecond][0].regionDefender)){
+                                        //Attacking Enemy player who's empire is non-integrated, and will NOT become integrated even if the invasion is successful
+                                        decision.verdict = true;
+                                        decision.regionInvader = this.fullDiceInvaders[localRandomIndexSecond][0].regionInvader;
+                                        decision.regionDefender = this.fullDiceInvaders[localRandomIndexSecond][0].regionDefender;
+                                    }
+                                }else{
+                                    //Attacking Enemy player who's empire is already integrated
                                     decision.verdict = true;
                                     decision.regionInvader = this.fullDiceInvaders[localRandomIndexSecond][0].regionInvader;
                                     decision.regionDefender = this.fullDiceInvaders[localRandomIndexSecond][0].regionDefender;
                                 }
-                            }else{
-                                //Attacking Enemy player who's empire is already integrated
-                                decision.verdict = true;
-                                decision.regionInvader = this.fullDiceInvaders[localRandomIndexSecond][0].regionInvader;
-                                decision.regionDefender = this.fullDiceInvaders[localRandomIndexSecond][0].regionDefender;
                             }
                         }
                     }
                 }
             }
-
             //Clearing instance variables related to one strike's analysis
             this.enemyCastledRegionsDisruption = [];
             this.fullDiceInvaders = [];
@@ -571,6 +582,7 @@ export class AIManager extends PlayerManager{
     }
 
     turnPreAnalysis(){
+        //Refreshing victim
         if(this.focusVictim !== null){
             if(!TurnSystem.playersSequence.includes(this.focusVictim)){
                 this.focusVictim = null;
@@ -585,6 +597,11 @@ export class AIManager extends PlayerManager{
         }
 
         this.turnStrikesNumber = this.playerInstanceReference.strikes;
+
+        //Checking whether the player himself is a dominant
+        if(this.playerInstanceReference.regions.length > (24 - 3*TurnSystem.playersSequence.length) && this.playerInstanceReference.regions.length > 7){
+            this.playerIsDominant = true;
+        }
 
         let neighbourEmpires = new Set();
         for(let i=0; i<this.playerInstanceReference.regions.length; i++){
@@ -636,7 +653,7 @@ export class AIManager extends PlayerManager{
             //Checking if some enemies already dominate
             if(TurnSystem.playersSequence[i] !== this.playerInstanceReference &&
                 TurnSystem.playersSequence[i] !== GameStorage.players[GameStorage.playersNumber] &&
-                TurnSystem.playersSequence[i].regions.length > (25 - 3*TurnSystem.playersSequence.length) &&
+                TurnSystem.playersSequence[i].regions.length > (24 - 3*TurnSystem.playersSequence.length) &&
                 TurnSystem.playersSequence[i].regions.length > regionMaximum){ 
                 regionMaximum = TurnSystem.playersSequence[i].regions.length;
             }
@@ -657,7 +674,7 @@ export class AIManager extends PlayerManager{
         //Checking whether powerful or weak neighbours are there at player's borders
         for(let i=0; i<TurnSystem.playersSequence.length; i++){
             if(TurnSystem.playersSequence[i] !== this.playerInstanceReference && neighbourEmpires.has(TurnSystem.playersSequence[i])
-                && TurnSystem.playersSequence[i].regions.length > 5){
+                && TurnSystem.playersSequence[i].regions.length > 4){
                 if(this.competitorsAnalysis.get(TurnSystem.playersSequence[i]).diceAvailable > this.competitorsAnalysis.get(this.playerInstanceReference).diceAvailable){
                     this.powerfulNeighbours.add(TurnSystem.playersSequence[i]);
                 }
@@ -845,24 +862,64 @@ export class AIManager extends PlayerManager{
     }
 
     static chooseAllies(players){
-        let copied = [...players];
-        TurnSystem.classicFisherYatesMethod(copied);
-        let allies = [copied[0], copied[1]];
-
+        //Clearing old allies firstly
         for(let i=0; i<players.length; i++){
             if(!players[i].playerManager.playerHuman){
-                if(players[i] === allies[0]){
-                    players[i].playerManager.ally = allies[1];
-                }
-                if(players[i] === allies[1]){
-                    players[i].playerManager.ally = allies[0];
-                }
+                players[i].playerManager.ally = null;
             }
+        }
+
+        const copied = [...players];
+        for(let i=0; i<copied.length; i++){
+            if(copied[i].playerManager.playerHuman){
+                copied.splice(i, 1);
+                break;
+            }
+        }
+        TurnSystem.classicFisherYatesMethod(copied);
+
+        const alliesMode = ([4,5].includes(copied.length) && Math.random() > 0.4 ? 2 : 1);
+
+        switch(alliesMode){
+            case 2:{
+                for(let i=0; i<players.length; i++){
+                    if(!players[i].playerManager.playerHuman){
+                        if(players[i] === copied[0]){
+                            players[i].playerManager.ally = copied[1];
+                        }
+                        if(players[i] === copied[1]){
+                            players[i].playerManager.ally = copied[0];
+                        }
+                        if(players[i] === copied[2]){
+                            players[i].playerManager.ally = copied[3];
+                        }
+                        if(players[i] === copied[3]){
+                            players[i].playerManager.ally = copied[2];
+                        }
+                    }
+                }
+                break;
+            }
+            case 1:{
+                const allies = [copied[0], copied[1]];
+                for(let i=0; i<players.length; i++){
+                    if(!players[i].playerManager.playerHuman){
+                        if(players[i] === allies[0]){
+                            players[i].playerManager.ally = allies[1];
+                        }
+                        if(players[i] === allies[1]){
+                            players[i].playerManager.ally = allies[0];
+                        }
+                    }
+                }
+                break;
+            }
+            default:{throw new Error(`Unknown allies mode: ${alliesMode}`);}
         }
     }
 
     static refreshAllies(players){
-        if(players.length < 4){
+        if(players.length < 3){
             for(let i=0; i<players.length; i++){
                 if(!players[i].playerManager.playerHuman){
                     players[i].playerManager.ally = null;
