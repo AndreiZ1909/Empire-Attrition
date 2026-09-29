@@ -433,7 +433,7 @@ export class Statusbar{
 		
 		//Contacts
 		let contactLevel;
-		contactLevel = Statusbar.calculateBarLevel(actualResourceValues.enemyNeighbours, [1, 3, 4]);
+		contactLevel = Statusbar.calculateBarLevel(actualResourceValues.enemyNeighbours, [1, 3, 5]);
 		this.contactsElement.textContent = Statusbar.renderEmpireDevelopmentBars(contactLevel, 3);
 		
 		//Open frontier

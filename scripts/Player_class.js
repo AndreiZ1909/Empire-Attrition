@@ -240,11 +240,11 @@ export class Player{
 
 			//Economy recalculation main formulas
 			if(TurnSystem.playersSequence.length > 2){
-				alivePlayers[i].diceRevenue = Math.round(Math.pow((0.7*playerResources.castledFrontierRegions + 2*playerResources.castledNonFrontierRegions/alivePlayers.length), isolationPower) + playerResources.enemyNeighbours);
+				alivePlayers[i].diceRevenue = Math.round(Math.pow((0.7*playerResources.castledFrontierRegions + 2*playerResources.castledNonFrontierRegions/alivePlayers.length), isolationPower) + 0.85*playerResources.enemyNeighbours);
 				alivePlayers[i].strikes = Math.round((GameStorage.playersNumber-alivePlayers.length)/3 + Math.pow(playerResources.nonCastledRegionsNumber, 0.7));
 			}else{
 				//When only 2 players are left, economy recalculations are simplified - balance becomes fragile now
-				alivePlayers[i].diceRevenue = Math.round(Math.pow(Math.max((playerResources.castledNonFrontierRegions+playerResources.castledFrontierRegions) - 8, 0), isolationPower));
+				alivePlayers[i].diceRevenue = Math.round(Math.pow(Math.max((playerResources.castledNonFrontierRegions+playerResources.castledFrontierRegions) - 9, 0), isolationPower));
 				alivePlayers[i].strikes = playerResources.nonCastledRegionsNumber;
 			}
 

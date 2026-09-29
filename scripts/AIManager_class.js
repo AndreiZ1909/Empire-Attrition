@@ -386,7 +386,7 @@ export class AIManager extends PlayerManager{
                     // alleviating the rule if the defender is much stronger than the Invader AIplayer
                     ((this.powerfulNeighbours.has(possibleAttacks[i].regionDefender.owner) && (possibleAttacks[i].regionDefender.owner.regions.length<1.5*possibleAttacks[i].regionInvader.owner.regions.length))
                     || (!this.powerfulNeighbours.has(possibleAttacks[i].regionDefender.owner) && possibleAttacks[i].regionDefender.owner.regions.length < 5))){
-                    possibleAttacks[i].rating -= (8 + 2*this.behaviorVector[5]); //[tactical]
+                    possibleAttacks[i].rating -= (7 + 2*this.behaviorVector[5]); //[tactical]
                 }else if(this.powerfulNeighbours.size>0 && AIplayer.regions.length===1){
                     possibleAttacks[i].rating += 8; // [static]
                 }
@@ -403,11 +403,6 @@ export class AIManager extends PlayerManager{
                         && possibleAttacks[i].regionInvader.diceNumber > possibleAttacks[i].regionInvader.adjacentRegions[j].diceNumber
                         && possibleAttacks[i].regionInvader.adjacentRegions[j].diceNumber > strongestNeighbourDiceNumber){
                             strongestNeighbourDiceNumber = possibleAttacks[i].regionInvader.adjacentRegions[j].diceNumber;
-                    }
-                    if(possibleAttacks[i].regionInvader.diceNumber < possibleAttacks[i].regionInvader.adjacentRegions[j].diceNumber &&
-                       possibleAttacks[i].regionInvader.adjacentRegions[j].owner !== this.ally){
-                        strongestNeighbourDiceNumber = 7;
-                        break;
                     }
                 }
                 if(possibleAttacks[i].regionDefender.diceNumber === strongestNeighbourDiceNumber && strongestNeighbourDiceNumber > 1 &&
@@ -433,7 +428,7 @@ export class AIManager extends PlayerManager{
                             }
                         }
                         if(defeatPossible){
-                            possibleAttacks[i].rating += (12 - 3*this.behaviorVector[4] + this.behaviorVector[1]); //[hostile][prudent]
+                            possibleAttacks[i].rating += (12 - 2*this.behaviorVector[4] + this.behaviorVector[1]); //[hostile][prudent]
                         }
                     }
                 }
@@ -535,7 +530,7 @@ export class AIManager extends PlayerManager{
                     }
 
                     //Don't hold fully armored regions
-                    if(!decision.verdict && this.fullDiceInvaders.length>0 && Math.random() < 0.75){
+                    if(!decision.verdict && this.fullDiceInvaders.length>0 && (Math.random()<0.66 || AIplayer.strikes===this.turnStrikesNumber)){
                         let localRandomIndexSecond = Math.floor(Math.random()*this.fullDiceInvaders.length);
 
                         if(this.fullDiceInvaders[localRandomIndexSecond][0].regionDefender.owner === GameStorage.players[GameStorage.playersNumber]){
@@ -544,7 +539,7 @@ export class AIManager extends PlayerManager{
                             decision.regionInvader = this.fullDiceInvaders[localRandomIndexSecond][0].regionInvader;
                             decision.regionDefender = this.fullDiceInvaders[localRandomIndexSecond][0].regionDefender;
                         }else{
-                            if((this.dominatingEnemies.size > 0 && (this.dominatingEnemies.has(this.fullDiceInvaders[localRandomIndexSecond][0].regionDefender.owner) || Math.random()<0.25))
+                            if((this.dominatingEnemies.size > 0 && (this.dominatingEnemies.has(this.fullDiceInvaders[localRandomIndexSecond][0].regionDefender.owner) || (Math.random()<0.25 || AIplayer.strikes===this.turnStrikesNumber)))
                                 || this.dominatingEnemies.size === 0){
                                if(this.fullDiceInvaders[localRandomIndexSecond][1]){
                                     if(!AIManager.exploreEmpireIntegrityRegionMinus(this.fullDiceInvaders[localRandomIndexSecond][0].regionDefender.owner, this.fullDiceInvaders[localRandomIndexSecond][0].regionDefender)){
@@ -586,7 +581,7 @@ export class AIManager extends PlayerManager{
         if(this.focusVictim !== null){
             if(!TurnSystem.playersSequence.includes(this.focusVictim)){
                 this.focusVictim = null;
-            }else if(Math.random() > 0.65){
+            }else if(Math.random() > 0.75){
                 this.focusVictim = null;
             }
         }
@@ -697,7 +692,7 @@ export class AIManager extends PlayerManager{
             }
 
             //Don't neglect turtle players sometimes even if weak neighbours exist
-            if(this.weakNeighbours.size > 0 && Math.random() > 0.8){
+            if(this.weakNeighbours.size > 0 && Math.random() > 0.85){
                 this.weakNeighbours.clear();
             }
         }
