@@ -96,7 +96,7 @@ export class TurnSystem{
 		Painter.focusEndTurnButton(currentPlayer, 'OFF');
 
 		AIManager.strikesStatsRefresh();
-		if([4,5,6].includes(TurnSystem.playersSequence.length)){
+		if([3,4,5,6].includes(TurnSystem.playersSequence.length)){
 			AIManager.refreshAllies(TurnSystem.playersSequence);
 		}
 

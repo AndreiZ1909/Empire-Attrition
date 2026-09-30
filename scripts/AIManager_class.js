@@ -913,6 +913,24 @@ export class AIManager extends PlayerManager{
         }
     }
 
+    static cartelInspection(players){
+        const copied = [...players];
+        for(let i=0; i<copied.length; i++){
+            if(copied[i].playerManager.playerHuman){
+                copied.splice(i, 1);
+                break;
+            }
+        }
+
+        if(copied[0].playerManager.ally === copied[1] && copied[1].playerManager.ally === copied[0]){
+            if((copied[0].regions.length+copied[1].regions.length) > 30 &&
+                Math.abs(copied[0].regions.length - copied[1].regions.length) > 6){
+                copied[0].playerManager.ally = null;
+                copied[1].playerManager.ally = null;
+            }
+        }
+    }
+
     static refreshAllies(players){
         if(players.length < 3){
             for(let i=0; i<players.length; i++){
@@ -920,8 +938,12 @@ export class AIManager extends PlayerManager{
                     players[i].playerManager.ally = null;
                 }
             }
-        }else if(Math.random() < 0.04){
-            AIManager.chooseAllies(players);
+        }else{
+            if([4,5,6].includes(players.length) && Math.random() < 0.04){
+                AIManager.chooseAllies(players); 
+            }else if(players.length === 3){
+                AIManager.cartelInspection(players);
+            }
         }
     }
 
