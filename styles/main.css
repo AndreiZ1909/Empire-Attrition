@@ -103,7 +103,7 @@
 	transition: 
 		transform .15s ease,
 		border-radius .15s ease,
-		border-width .8s ease;
+		/*border-width .8s ease;*/
 }
 .cell-basic.cell-anchor{
     z-index: 2;
