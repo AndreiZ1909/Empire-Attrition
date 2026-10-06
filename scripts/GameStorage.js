@@ -3,8 +3,8 @@ export const GameStorage = {
 	//Game default set-up
 	playersNumber: 8,
 	regionsNumber: 40,
-	cellsYaxis: 30,
-	cellsXaxis: 77, // 2.57 ratio for in-tab gaming on a 16:9' ratio monitors as a default set-up
+	cellsYaxis: 31,
+	cellsXaxis: 80, // 2.56 ratio for in-tab gaming on a 16:9' ratio monitors as a default set-up
 
 	//Economy set-up
 	neutralDiceNumber: 2,

@@ -63,7 +63,9 @@ export class Grid{
 		let deltaX = (divGridWidth - cellSize*gridInstance.columns)/2;
 		let deltaY = (divGridHeight - cellSize*gridInstance.lines)/2;
 
-		document.getElementById(gridInstance.html_global_id).style.transform = `translate(${deltaX}px, ${deltaY}px)`;
+		//0610 document.getElementById(gridInstance.html_global_id).style.transform = `translate(${deltaX}px, ${deltaY}px)`;
+		document.getElementById(gridInstance.html_global_id).style.left = `${deltaX}px`;
+		document.getElementById(gridInstance.html_global_id).style.top = `${deltaY}px`;
 	}
 
 	static buildRegions(coreGrid, gridInstance){
