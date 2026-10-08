@@ -41,26 +41,25 @@
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-	gap: 0.5px;
 
 	width: 100%;
 	height: 100%;
 }
 .player-name-info-tile{
 	font-family: Segoe UI, sans-serif;
-	font-size: 1.1vw;
+	font-size: 1.06vw;
 	font-weight: 700;
 	user-select: none;
 }
 .player-revenue-info-tile{
 	font-family: Segoe UI, sans-serif;
-	font-size: 0.99vw;
+	font-size: 0.98vw;
 	font-weight: 460;
 	user-select: none;
 }
 .player-strikes-info-tile{
 	font-family: Segoe UI, sans-serif;
-	font-size: 1.03vw;
+	font-size: 1.02vw;
 	font-weight: 510;
 	user-select: none;
 }
@@ -144,7 +143,7 @@
 	width: 19vw;
 	height: 23vh;
 	transform: translateY(-14vh);
-	border-radius: 0.7vw;
+	border-radius: 0.8vw;
 	box-shadow:
 	    4px 8px 20px 3px rgba(0, 0, 0, .55),
     	0 0 24px 4px rgba(80, 120, 255, .15);
@@ -196,7 +195,7 @@
 			#434e63
 		);
 	border-radius: 0.5vw;
-	padding-bottom: 1.5px;
+	padding-bottom: 0.1vw;
 
     transition:
         transform 120ms ease,

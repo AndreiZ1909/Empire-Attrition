@@ -340,11 +340,11 @@ export class Statusbar{
 
 		const colgroup = document.createElement('colgroup');
 		const col1 = document.createElement('col');
-		col1.style.width = '28%';
+		col1.style.width = '30%';
 		const col2 = document.createElement('col');
 		col2.style.width = '47%';
 		const col3 = document.createElement('col');
-		col3.style.width = '25%';
+		col3.style.width = '23%';
 
 		colgroup.append(col1, col2, col3);
 		table.appendChild(colgroup);
