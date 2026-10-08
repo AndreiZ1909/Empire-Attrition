@@ -294,8 +294,6 @@ export class Region{
 	static refreshRegionDiceImage(region){
 		region.anchorCell.divElement.classList.remove('anchor-cell-attack');
    		region.anchorCell.spanLink.textContent = '';
-
-		region.dieImage.classList.add('die-image');
 		FileManager.showDiceImage(region.dieImage, region.diceNumber);
 	}
 

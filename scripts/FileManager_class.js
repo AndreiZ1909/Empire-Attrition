@@ -33,10 +33,7 @@ export class FileManager{
 
 	static showDiceImage(dieImage, diceNumber){
 		dieImage.src = FileManager.imageLinks[diceNumber-1];
-	}
-
-	static removeDiceImage(dieImage){
-		dieImage.src = '';
+		dieImage.classList.remove('die-image-hidden');
 	}
 
 	static playSound(fileName){

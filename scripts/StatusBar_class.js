@@ -125,7 +125,7 @@ export class Statusbar{
 			playerTooltip.classList.add('player-tooltip');
 			playerTooltip.style.setProperty('background',
 			    `linear-gradient(270deg, rgba(${statusBars[i].player.arrayRGB[0]}, ${statusBars[i].player.arrayRGB[1]}, ${statusBars[i].player.arrayRGB[2]}, 1),
-			     rgba(${statusBars[i].player.arrayRGB[0]}, ${statusBars[i].player.arrayRGB[1]}, ${statusBars[i].player.arrayRGB[2]}, 0.7))`);
+			     rgba(${statusBars[i].player.arrayRGB[0]}, ${statusBars[i].player.arrayRGB[1]}, ${statusBars[i].player.arrayRGB[2]}, 0.75))`);
 
 			diceCount.classList.add('player-revenue-info-tile');
 			attackCount.classList.add('player-strikes-info-tile');
@@ -342,9 +342,9 @@ export class Statusbar{
 		const col1 = document.createElement('col');
 		col1.style.width = '28%';
 		const col2 = document.createElement('col');
-		col2.style.width = '53%';
+		col2.style.width = '47%';
 		const col3 = document.createElement('col');
-		col3.style.width = '19%';
+		col3.style.width = '25%';
 
 		colgroup.append(col1, col2, col3);
 		table.appendChild(colgroup);
@@ -494,7 +494,7 @@ export class Statusbar{
 	}
 
 	static renderEmpireDevelopmentBars(number, maximum){
-		let result = '● '.repeat(number) + '○ '.repeat(maximum - number);
+		let result = '◆ '.repeat(number) + '◇ '.repeat(maximum - number);
 		return result;
 	}
 }

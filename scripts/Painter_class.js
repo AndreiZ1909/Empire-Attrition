@@ -131,10 +131,8 @@ export class Painter{
 	}
 
 	static displayDuelResults(regionInvader, regionDefender, scoreInvader, scoreDefender){
-   		FileManager.removeDiceImage(regionInvader.dieImage);
-   		FileManager.removeDiceImage(regionDefender.dieImage);
-   		regionInvader.dieImage.classList.remove('die-image');
-   		regionDefender.dieImage.classList.remove('die-image');
+   		regionInvader.dieImage.classList.add('die-image-hidden');
+   		regionDefender.dieImage.classList.add('die-image-hidden');
 
    		regionInvader.anchorCell.divElement.classList.add('anchor-cell-attack');
    		regionDefender.anchorCell.divElement.classList.add('anchor-cell-attack');
@@ -158,7 +156,7 @@ export class Painter{
 		GameStorage.statusBars[player.playerID].divButtonElement.classList.remove('endturn-button-invisible');
 	}
 
-	//End Round&turn css assignment - cosmetic split of shifting is implemented in the below 2 methods
+	//End Round&turn CSS assignment - cosmetic split of shifting is implemented in the below 2 methods
 	static endTurnTileRemoval(currentPlayer){
 		if(currentPlayer.playerManager.playerHuman){
 			Painter.endTurnButtonHide(currentPlayer);
