@@ -272,10 +272,10 @@ export class Region{
 			}
 
 			switch(delayDuration){
-				case 330:{ 
+				case 380:{ 
 					this.anchorCell.divElement.classList.add('anchor-cell-reinforcement-medium');
 					break;}
-				case 250:{ 
+				case 280:{ 
 					this.anchorCell.divElement.classList.add('anchor-cell-reinforcement-swift');
 					break;}
 				default:{ 
@@ -313,7 +313,7 @@ export class Region{
 
 		//Dynamic delay duration
 		let revenueMaximum = 1;
-		let delayDuration = 500;
+		let delayDuration = 550;
 
 		for(let i=0; i<GameStorage.playersNumber; i++){
 			if(GameStorage.players[i].regions.length > 0){
@@ -337,10 +337,10 @@ export class Region{
 			}
 		}
 
-		if(revenueMaximum > 6){
-			delayDuration = 330;
+		if(revenueMaximum > 5){
+			delayDuration = 380;
 			if(revenueMaximum > 10){
-				delayDuration = 250;
+				delayDuration = 280;
 			}
 		}
 

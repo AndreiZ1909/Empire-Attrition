@@ -139,13 +139,13 @@
 /* Animation of cells reinforcements.
    Timing to be aligned with Region.delayedUpdateAllDiceOnMap() and Region.updateRegionAndBar() */
 .anchor-cell-reinforcement-slow{
-	animation: reinforcementBlink 0.5s ease;
+	animation: reinforcementBlink 0.55s ease;
 }
 .anchor-cell-reinforcement-medium{
-	animation: reinforcementBlink 0.33s ease;
+	animation: reinforcementBlink 0.38s ease;
 }
 .anchor-cell-reinforcement-swift{
-	animation: reinforcementBlink 0.25s ease;
+	animation: reinforcementBlink 0.28s ease;
 }
 @keyframes reinforcementBlink{
 	0%, 100%{

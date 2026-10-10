@@ -9,6 +9,7 @@
 	transform: translateY(-1.3vw) scale(.85);
 	pointer-events: none;
 	opacity: 0;
+	z-index: 10;
 	
 	width: 70%;
 	height: 75vh;
