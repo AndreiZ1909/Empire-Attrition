@@ -1,0 +1,11 @@
+Copyright (c) 2026 AndreiZ1909
+
+All rights reserved to the extent permitted by applicable law.
+
+The original HTML, CSS, and JavaScript source code in this project may not be copied, modified, distributed, or reused without prior written permission from the copyright holder, except where permitted by applicable law.
+
+Third-party and AI-generated assets included in this project may be subject to separate terms. In particular, sounds generated with CrunchySFX are released under CC0 1.0, according to CrunchySFX's published terms.
+
+No rights are claimed under this notice beyond those held by the copyright holder.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, TO THE EXTENT PERMITTED BY LAW.
