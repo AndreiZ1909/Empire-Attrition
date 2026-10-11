@@ -6,7 +6,7 @@ export const GameStorage = {
 	cellsYaxis: 31,
 	cellsXaxis: 80, // 2.56 ratio for in-tab gaming on a 16:9' ratio monitors as a default set-up
 
-	//Economy set-up
+	//Economic set-up
 	neutralDiceNumber: 2,
 	regionDiceLimit: 6,
 	castleThreshold: 2,

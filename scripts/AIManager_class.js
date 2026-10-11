@@ -23,6 +23,7 @@ export class AIManager extends PlayerManager{
         this.adjacentEnemyRegions = new Set();                              //region instances
         this.diplomaticHistory = new Map();                                 //{player:influence} pairs
         this.dominatingEnemies = new Set();                                 //player instances
+        this.enemiesInCorners = new Set();                                  //player instances
         this.ally = null;                                                   //player instance
         this.focusVictim = null;                                            //player instance
         this.playerIsDominant = false;      
@@ -61,7 +62,8 @@ export class AIManager extends PlayerManager{
             this.diplomaticHistory.clear();
             this.dominatingEnemies.clear();
             this.powerfulNeighbours.clear();
-            this.weakNeighbours.clear();   
+            this.weakNeighbours.clear();  
+            this.enemiesInCorners.clear(); 
             this.turnStrikesNumber = 0;
             this.playerIsDominant = false;
  
@@ -248,14 +250,14 @@ export class AIManager extends PlayerManager{
                             invaderNonCastledRegionsNumber++;
                         }
                     }
-                    let defenderNonCastledRegionsNumber = currentStatusDefender.nonCastledRegionsNumber;
+                    let defenderNonCastledRegionsNumber = currentStatusDefender.conflictZones;
                     if(invaderNonCastledRegionsNumber>defenderNonCastledRegionsNumber && possibleAttacks[i].regionDefender.castled){
                         possibleAttacks[i].rating -= 3; //[static]
                     }
                 }
 
 
-                ////General map frontline overview rules
+                ////General map overview rules
                 //Checking how many additional friendly regions will the conquered region possess
                 let friendlyRegionsAtTargetCounter = -1;
                 let neutralNewNeighbourRegionsExist = false;
@@ -342,6 +344,17 @@ export class AIManager extends PlayerManager{
                 //Prioritizing attacks based on diplomatic relationships, stored in diplomaticHistory
                 if(possibleAttacks[i].regionDefender.owner !== GameStorage.players[GameStorage.playersNumber]){
                     possibleAttacks[i].rating += Math.floor(this.diplomaticHistory.get(possibleAttacks[i].regionDefender.owner)*(2.25-this.behaviorVector[4])); //[hostile]
+                }
+
+                //Prioritizing those enemies, who have already captured corners of the map
+                if(TurnSystem.playersSequence.length > 4){
+                    if(possibleAttacks[i].regionDefender.owner !== GameStorage.players[GameStorage.playersNumber] &&
+                        this.enemiesInCorners.has(possibleAttacks[i].regionDefender.owner)){
+                        possibleAttacks[i].rating += 3; //[static]
+                        if(possibleAttacks[i].regionDefender.owner.regions.length > 3 && AIplayer.regions.length < 4){
+                            possibleAttacks[i].rating += (5 + (possibleAttacks[i].regionInvader.diceNumber >= possibleAttacks[i].regionDefender.diceNumber? 10 : 0)); //[static]
+                        }
+                    }
                 }
 
 
@@ -608,6 +621,13 @@ export class AIManager extends PlayerManager{
             }
         }
 
+        //Collecting players, which already conquered corners of the map
+        for(let i=0; i<GameStorage.regions.length; i++){
+            if(GameStorage.regions[i].cornerRegion && GameStorage.regions[i].owner !== GameStorage.players[GameStorage.playersNumber]){
+                this.enemiesInCorners.add(GameStorage.regions[i].owner);
+            }
+        }
+
         //Determining which players could be considered as allies or enemies
         let ASCsortedVector = new Map([...this.playerInstanceReference.diplomaticHistoryVector.entries()].sort((a, b) => a[1] - b[1]));
         for (const [key, value] of ASCsortedVector){
@@ -638,7 +658,7 @@ export class AIManager extends PlayerManager{
 
             let enemyStats = {
                 regionsNumber: TurnSystem.playersSequence[i].regions.length,
-                revenue: TurnSystem.playersSequence[i].diceRevenue,
+                income: TurnSystem.playersSequence[i].diceIncome,
                 contacts: enemyInitialStatus.enemyNeighbours,
                 integrity: (enemyInitialStatus.isolation ? false : true),
                 diceAvailable: diceAvailableTotal

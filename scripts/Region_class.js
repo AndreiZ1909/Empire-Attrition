@@ -2,6 +2,7 @@ import { GameStorage } from './GameStorage.js';
 import { InputHandler } from './InputHandler_class.js';
 import { Painter } from './Painter_class.js';
 import { FileManager } from './FileManager_class.js';
+import { Cell } from './Map_classes.js';
 
 export class Region{
 	constructor(regionID, neutralOwner, initialColorClass){
@@ -10,6 +11,7 @@ export class Region{
 		this.cells = [];						//instances
 		this.adjacentRegions = [];				//instances
 		this.frontlineCells = new Set();		//instances
+		this.cornerRegion = false;
 
 		this.anchorCell = null;					//instance
 		this.dieImage = null;					//IMG element
@@ -19,7 +21,7 @@ export class Region{
 		this.colorClass = initialColorClass;
 		this.diceNumber = GameStorage.neutralDiceNumber;
 
-		this.castled = true;
+		this.castled = true;					//Castled regions are calmZones, non-castled - conflictZones
 		this.castledCounter = 0;
 		this.previousCastledStatus = true;		//needed only for repainting - doesn't influence economy
 	}
@@ -31,6 +33,10 @@ export class Region{
 			if (coreGrid[randomY][randomX].regionID === null){
 				coreGrid[randomY][randomX].regionID = i; //initial cell is assigned to a region
 				regions[i].cells.push(coreGrid[randomY][randomX]); //initial cell is added to region's array
+
+				if(coreGrid[randomY][randomX].checkIsCornerCell()){
+					regions[i].cornerRegion = true;
+				}
 
 				//initial cell's DIV Event Listener enablement
 				coreGrid[randomY][randomX].divElement.addEventListener("click", ()=>{InputHandler.handleCellClick(i)});
@@ -111,6 +117,10 @@ export class Region{
 			//Adding cellID to region's Array of cells
 			const newestCell = coreGrid[freeNeighbours[randomNeighbCell].y][freeNeighbours[randomNeighbCell].x];
 			region.cells.push(newestCell);
+
+			if(newestCell.checkIsCornerCell()){
+				region.cornerRegion = true;
+			}
 
 			result = true;
 		}
@@ -286,7 +296,7 @@ export class Region{
 			FileManager.showDiceImage(this.dieImage, this.diceNumber);
 
 			if(this.owner !== GameStorage.players[GameStorage.playersNumber]){
-				Painter.updateStatusBarValues(GameStorage.statusBars[this.owner.playerID], GameStorage.statusBars[this.owner.playerID].player.diceRevenue, GameStorage.statusBars[this.owner.playerID].player.strikes);
+				Painter.updateStatusBarValues(GameStorage.statusBars[this.owner.playerID], GameStorage.statusBars[this.owner.playerID].player.diceIncome, GameStorage.statusBars[this.owner.playerID].player.strikes);
 			}
 		}
 	}
@@ -312,7 +322,7 @@ export class Region{
 		let reinforcementRoundNumber = 1;
 
 		//Dynamic delay duration
-		let revenueMaximum = 1;
+		let incomeMaximum = 1;
 		let delayDuration = 550;
 
 		for(let i=0; i<GameStorage.playersNumber; i++){
@@ -324,22 +334,22 @@ export class Region{
 						nonMaxRegions.push(pair);
 					}
 				}
-				let playerInfo = [GameStorage.players[i], GameStorage.players[i].diceRevenue, null, nonMaxRegions];
+				let playerInfo = [GameStorage.players[i], GameStorage.players[i].diceIncome, null, nonMaxRegions];
 				playersAssets.push(playerInfo);
 
-				if(GameStorage.players[i].diceRevenue > revenueMaximum){
-					revenueMaximum = GameStorage.players[i].diceRevenue;
+				if(GameStorage.players[i].diceIncome > incomeMaximum){
+					incomeMaximum = GameStorage.players[i].diceIncome;
 				}
 
 				if(delayedFlag === 'DELAYED'){
-					playersReplinshResources.set(GameStorage.players[i], [GameStorage.players[i].diceRevenue, GameStorage.players[i].strikes]);
+					playersReplinshResources.set(GameStorage.players[i], [GameStorage.players[i].diceIncome, GameStorage.players[i].strikes]);
 				}
 			}
 		}
 
-		if(revenueMaximum > 5){
+		if(incomeMaximum > 5){
 			delayDuration = 380;
-			if(revenueMaximum > 10){
+			if(incomeMaximum > 10){
 				delayDuration = 280;
 			}
 		}
@@ -369,8 +379,8 @@ export class Region{
 								if(playersAssets[i][2] !== null){
 									playersAssets[i][2].diceNumber++;
 
-									let revenueIncrement = (playersReplinshResources.get(playersAssets[i][0])[0] > 0 ? true : false);
-									if(revenueIncrement){
+									let incomeIncrement = (playersReplinshResources.get(playersAssets[i][0])[0] > 0 ? true : false);
+									if(incomeIncrement){
 										playersReplinshResources.get(playersAssets[i][0])[0]--;
 									}
 
@@ -379,7 +389,7 @@ export class Region{
 										playersReplinshResources.get(playersAssets[i][0])[1]--;
 									}
 
-									playersAssets[i][2].updateRegionAndBar(true, delayDuration, revenueIncrement, strikesIncrement, reinforcementRoundNumber);
+									playersAssets[i][2].updateRegionAndBar(true, delayDuration, incomeIncrement, strikesIncrement, reinforcementRoundNumber);
 									playersAssets[i][2] = null;
 								}
 							}
@@ -404,7 +414,7 @@ export class Region{
 		if(delayedFlag === 'DELAYED'){
 			for (const [key, value] of playersReplinshResources){
 	            if(value[0] > 0 || value[1] > 0){
-	            	Painter.updateStatusBarValues(GameStorage.statusBars[key.playerID], key.diceRevenue, key.strikes);
+	            	Painter.updateStatusBarValues(GameStorage.statusBars[key.playerID], key.diceIncome, key.strikes);
 	            }
 	        }
 		}

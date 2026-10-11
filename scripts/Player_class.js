@@ -16,7 +16,7 @@ export class Player{
 
 		//Changeable
 		this.regions = [];
-		this.diceRevenue = GameStorage.playerInitialDiceNumber;
+		this.diceIncome = GameStorage.playerInitialDiceNumber;
 		this.strikes = GameStorage.playerInitialAttackNumber;
 
 		//Stats variables
@@ -240,36 +240,36 @@ export class Player{
 
 			//Economy recalculation main formulas
 			if(TurnSystem.playersSequence.length > 2){
-				alivePlayers[i].diceRevenue = Math.round(Math.pow((0.7*playerResources.castledFrontierRegions + 2*playerResources.castledNonFrontierRegions/alivePlayers.length), isolationPower) + 0.85*playerResources.enemyNeighbours);
-				alivePlayers[i].strikes = Math.round((GameStorage.playersNumber-alivePlayers.length)/3 + Math.pow(playerResources.nonCastledRegionsNumber, 0.7));
+				alivePlayers[i].diceIncome = Math.round(Math.pow((0.7*playerResources.calmZones + 2*playerResources.empireCore/alivePlayers.length), isolationPower) + 0.85*playerResources.enemyNeighbours);
+				alivePlayers[i].strikes = Math.round((GameStorage.playersNumber-alivePlayers.length)/3 + Math.pow(playerResources.conflictZones, 0.7));
 			}else{
 				//When only 2 players are left, economy recalculations are simplified - balance becomes fragile now
-				alivePlayers[i].diceRevenue = Math.round(Math.pow(Math.max((playerResources.castledNonFrontierRegions+playerResources.castledFrontierRegions) - 9, 0), isolationPower));
-				alivePlayers[i].strikes = playerResources.nonCastledRegionsNumber;
+				alivePlayers[i].diceIncome = Math.round(Math.pow(Math.max((playerResources.empireCore+playerResources.calmZones) - 9, 0), isolationPower));
+				alivePlayers[i].strikes = playerResources.conflictZones;
 			}
 
-			if(alivePlayers[i].diceRevenue < 1){
-				alivePlayers[i].diceRevenue = 1;
+			if(alivePlayers[i].diceIncome < 1){
+				alivePlayers[i].diceIncome = 1;
 			}
 			//Special case - punishing turtle players
 			if(AIManager.strikesCompletedStats.get(alivePlayers[i])[0] === 0 && AIManager.strikesCompletedStats.get(alivePlayers[i])[2] === 0
 				&& alivePlayers[i].regions.length === 1
 				&& playerResources.enemyNeighbours === 1 && !alivePlayers[i].regions[0].castled){
-					alivePlayers[i].diceRevenue = 0;
+					alivePlayers[i].diceIncome = 0;
 			}			
 			//Last Hope rule
-			if(alivePlayers[i].regions.length === 1 && alivePlayers[i].diceRevenue < 2){
+			if(alivePlayers[i].regions.length === 1 && alivePlayers[i].diceIncome < 2){
 				for(let j=0; j<alivePlayers[i].regions[0].adjacentRegions.length; j++){
 					if(alivePlayers[i].regions[0].adjacentRegions[j].diceNumber > alivePlayers[i].regions[0].diceNumber
 						&& alivePlayers[i].regions[0].adjacentRegions[j].owner !== GameStorage.players[GameStorage.playersNumber]){
-						alivePlayers[i].diceRevenue = 2;
+						alivePlayers[i].diceIncome = 2;
 						break;
 					}
 				}
 			}
 
 			if(alivePlayers[i].strikes < 2){
-				if(playerResources.nonCastledRegionsNumber > 0){
+				if(playerResources.conflictZones > 0){
 					alivePlayers[i].strikes = 2;
 				}else{
 					alivePlayers[i].strikes = 1;
@@ -280,10 +280,10 @@ export class Player{
 	}
 
 	computePlayerResources(){
-		let castledRegionsNumber = 0;
+		let calmRegionsNumber = 0;
 		let integrityStatus = true;
 
-		let castledFrontierRegionsNumber = new Set();
+		let calmFrontierRegionsNumber = new Set();
 		let adjacentEnemyPlayers = new Set();
 		let isolatedRegions = new Set();
 
@@ -291,7 +291,7 @@ export class Player{
 			let isolationCheck = false;
 
 			if(this.regions[i].castled === true){
-				castledRegionsNumber++;
+				calmRegionsNumber++;
 			}
 
 			for(let j=0; j<this.regions[i].adjacentRegions.length; j++){
@@ -299,7 +299,7 @@ export class Player{
 				   this.regions[i].adjacentRegions[j].owner !== GameStorage.players[GameStorage.playersNumber]){
 					adjacentEnemyPlayers.add(this.regions[i].adjacentRegions[j].owner);
 					if(this.regions[i].castled === true){
-						castledFrontierRegionsNumber.add(this.regions[i]);
+						calmFrontierRegionsNumber.add(this.regions[i]);
 					}
 				}
 				if(this.regions[i].adjacentRegions[j].owner === this){
@@ -347,11 +347,11 @@ export class Player{
 		}
 
 		let result = {
-			isolation: (!integrityStatus ? true : false),											//Empire integrity
-			castledNonFrontierRegions: (castledRegionsNumber - castledFrontierRegionsNumber.size),	//Empire core
-			castledFrontierRegions: castledFrontierRegionsNumber.size,								//Stable frontier
-			enemyNeighbours: adjacentEnemyPlayers.size,												//Contacts
-			nonCastledRegionsNumber: (this.regions.length - castledRegionsNumber)					//Open frontier
+			isolation: (!integrityStatus ? true : false),
+			empireCore: (calmRegionsNumber - calmFrontierRegionsNumber.size),
+			calmZones: calmFrontierRegionsNumber.size,
+			enemyNeighbours: adjacentEnemyPlayers.size,
+			conflictZones: (this.regions.length - calmRegionsNumber)
 		}
 		return result;
 	}

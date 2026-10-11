@@ -21,6 +21,9 @@ export class Painter{
 					}
 				}else{
 					region.cells[i].divElement.classList.add(cssClass);
+					if(region.cells[i] === region.anchorCell){
+						region.cells[i].divElement.style.setProperty('background-color', `rgba(${region.owner.arrayRGB[0]}, ${region.owner.arrayRGB[1]}, ${region.owner.arrayRGB[2]}, 1)`);
+					}
 				}
 			}else if(action === 'OFF'){
 				region.cells[i].divElement.classList.remove(cssClass);
@@ -41,7 +44,7 @@ export class Painter{
 	}
 
 	static paintConqueredRegion(region, newOwner){
-		Painter.paintRegion(region, region.owner.colorClass, 'OFF', region.castled);
+		Painter.paintRegion(region, region.owner.colorClass, 'OFF', false);
 		Painter.paintRegion(region, newOwner.colorClass, 'ON', false);
 	}
 
@@ -170,12 +173,12 @@ export class Painter{
 		GameStorage.statusBars[nextPlayer.playerID].divElement.classList.add('status-bar-tile-highlighted');
 	}
 
-	static updateStatusBarValues(statusBar, diceRevenue, strikes){
-		if(diceRevenue !== null){
-			if(diceRevenue === 1){
-				statusBar.spanDiceCount.textContent = `Revenue: 1 die`;
+	static updateStatusBarValues(statusBar, diceIncome, strikes){
+		if(diceIncome !== null){
+			if(diceIncome === 1){
+				statusBar.spanDiceCount.textContent = `Income: 1 point`;
 			}else{
-				statusBar.spanDiceCount.textContent = `Revenue: ${diceRevenue} dice`;
+				statusBar.spanDiceCount.textContent = `Income: ${diceIncome} points`;
 			}
 		}
 

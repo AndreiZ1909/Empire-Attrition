@@ -180,7 +180,7 @@ export class TurnSystem{
 	   		
 	   		FileManager.playSound('rollingDice');
 	   		let statusCode = Player.attack(regionInvader, regionDefender);
-			await TurnSystem.forceDelay(350);
+			await TurnSystem.forceDelay(350); //Attack results dependent delays in css: 250+350ms
 			switch(statusCode){
 				case 0: 
 					FileManager.playSound('failedAttempt');
@@ -194,11 +194,14 @@ export class TurnSystem{
 			}
 			await TurnSystem.forceDelay(250); //Attack results dependent delays in css: 250+350ms
 
+			Region.refreshRegionDiceImage(regionInvader);
+			Region.refreshRegionDiceImage(regionDefender);
+
 			Painter.paintRegion(regionInvader, regionInvader.owner.colorClass, 'ON', regionInvader.castled);
 			Painter.paintRegion(regionDefender, regionDefender.owner.colorClass, 'ON', regionDefender.castled);
 			TurnSystem.eliminatingPlayers();
 
-	    	await Statusbar.updateStatusBarInfoUponAttack(GameStorage.statusBars[regionInvader.owner.playerID], currentOwner, TurnSystem.playersSequence);
+			await Statusbar.updateStatusBarInfoUponAttack(GameStorage.statusBars[regionInvader.owner.playerID], currentOwner, TurnSystem.playersSequence);
 			Statusbar.checkEndTurnButtonFocus(regionInvader.owner);
 			
 			//Update sequence pointer if a non-neutral player has been defeated
@@ -214,14 +217,11 @@ export class TurnSystem{
 				TurnSystem.selectedRegionAttacked = null;
 			}
 
-			Region.refreshRegionDiceImage(regionInvader);
-			Region.refreshRegionDiceImage(regionDefender);
-
 			Painter.highlightDuelingRegion(regionInvader, 'OFF', false);
 			Painter.highlightDuelingRegion(regionDefender, 'OFF', true);
 
 	    	if(currentOwner.regions.length === 0 && currentOwner !== GameStorage.players[GameStorage.playersNumber]){
-				await TurnSystem.forceDelay(1400);// to cope with potential calculation bug during AI caused elimination
+				await TurnSystem.forceDelay(1400);// to cope with potential calculation' duration bug during AI caused elimination
 	    	}
 
 			if(regionInvader.owner.playerManager.playerHuman){

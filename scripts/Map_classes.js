@@ -1,6 +1,7 @@
+import { GameStorage } from './GameStorage.js';
 import { Region } from './Region_class.js';
 
-class Cell{
+export class Cell{
 	constructor(cellID, x, y){
 		this.cellID = cellID;
 		this.x = x;
@@ -8,6 +9,16 @@ class Cell{
 		this.divElement = null;  		//declaring a link to DOM <div> cell
 		this.regionID = null;
 		this.spanLink = null;
+	}
+
+	checkIsCornerCell(){
+		let result = false;
+		if(this.x === 0 || this.x === (GameStorage.cellsXaxis-1)){
+			if(this.y === 0 || this.y === (GameStorage.cellsYaxis-1) || this.y === Math.round(GameStorage.cellsYaxis/2)){
+				result = true;
+			}
+		}
+		return result;
 	}
 }
 
@@ -40,7 +51,7 @@ export class Grid{
 
 		for (let i = 0; i < gridInstance.lines; i++){
 			const newline = [];
-			gridInstance.coreGrid.push( newline );
+			gridInstance.coreGrid.push(newline);
 			for (let j = 0; j < gridInstance.columns; j++){
 
 				//Array of cells for game logic

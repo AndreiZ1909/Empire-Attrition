@@ -31,10 +31,10 @@ export class Statusbar{
 
 		//Tooltips information references
 		this.empireCoreElement = '';
-		this.stableFrontierElement = '';
+		this.calmZonesElement = '';
 		this.contactsElement = '';
 		this.empireIntegrityElement = '';
-		this.openFrontierElement = '';
+		this.conflictZonesElement = '';
 		this.survivalElement = '';
 
 		//Incrementing counter of resources on the Status Bars
@@ -103,7 +103,7 @@ export class Statusbar{
 			---playerName                         <span>				player-name-info-tile.css   player-name-span-color-${i}.css
 			---playerTooltip                     <div>					player-tooltip.css
 			--playerResourceArea                 <div>					info-container.css
-			---diceCount                          <span>				player-revenue-info-tile.css	
+			---diceCount                          <span>				player-income-info-tile.css	
 			---attackCount                        <span>				player-strikes-info-tile.css
 			-divTileButton                       <div>                  endturn-button[-invisible].css
 			---endTurnLabel                       <span>
@@ -127,7 +127,7 @@ export class Statusbar{
 			    `linear-gradient(270deg, rgba(${statusBars[i].player.arrayRGB[0]}, ${statusBars[i].player.arrayRGB[1]}, ${statusBars[i].player.arrayRGB[2]}, 1),
 			     rgba(${statusBars[i].player.arrayRGB[0]}, ${statusBars[i].player.arrayRGB[1]}, ${statusBars[i].player.arrayRGB[2]}, 0.75))`);
 
-			diceCount.classList.add('player-revenue-info-tile');
+			diceCount.classList.add('player-income-info-tile');
 			attackCount.classList.add('player-strikes-info-tile');
 
 			//playerNameArea is used only for hover event catching. Data structure is handled in playerTooltip
@@ -217,7 +217,7 @@ export class Statusbar{
 				}else{
 					GameStorage.statusBars[i].currentTurnOrder = index;
 				}
-				Painter.updateStatusBarValues(GameStorage.statusBars[i], GameStorage.statusBars[i].player.diceRevenue, GameStorage.statusBars[i].player.strikes);
+				Painter.updateStatusBarValues(GameStorage.statusBars[i], GameStorage.statusBars[i].player.diceIncome, GameStorage.statusBars[i].player.strikes);
 			}
 		}
 
@@ -243,7 +243,7 @@ export class Statusbar{
 				}else{
 					GameStorage.statusBars[i].currentTurnOrder = index;
 				}
-				GameStorage.statusBars[i].spanDiceCount.textContent = 'Revenue: 0 dice';
+				GameStorage.statusBars[i].spanDiceCount.textContent = 'Income: 0 points';
 				GameStorage.statusBars[i].spanAttackCount.textContent = '0 strike left';
 				GameStorage.statusBars[i].displayDiceNumber = 0;
 				GameStorage.statusBars[i].displayStrikesNumber = 0;
@@ -329,22 +329,22 @@ export class Statusbar{
 	}
 
 	buildToolTip(textColor){
-		const tableLabels = [['Revenue', 'Empire integrity'], 
-							 ['Revenue', 'Empire core'], 
-							 ['Revenue', 'Stable frontier'], 
-							 ['Revenue', 'Contacts'], 
-							 ['Strikes', 'Open frontier'], 
+		const tableLabels = [['Income', 'Empire integrity'], 
+							 ['Income', 'Empire core'], 
+							 ['Income', 'Calm zones'],  
+							 ['Income', 'Contacts'], 
+							 ['Strikes', 'Conflict zones'], 
 							 ['Strikes', 'Survival']];
 
 		const table = document.createElement('table');
 
 		const colgroup = document.createElement('colgroup');
 		const col1 = document.createElement('col');
-		col1.style.width = '30%';
+		col1.style.width = '28%';
 		const col2 = document.createElement('col');
-		col2.style.width = '47%';
+		col2.style.width = '48%';
 		const col3 = document.createElement('col');
-		col3.style.width = '23%';
+		col3.style.width = '24%';
 
 		colgroup.append(col1, col2, col3);
 		table.appendChild(colgroup);
@@ -374,15 +374,15 @@ export class Statusbar{
 			switch (i){
 				case 0:{ this.empireIntegrityElement = td3; break; }
 				case 1:{ this.empireCoreElement = td3; break; }
-				case 2:{ this.stableFrontierElement = td3; break; }
+				case 2:{ this.calmZonesElement = td3; break; }
 				case 3:{ this.contactsElement = td3; break; }
-				case 4:{ this.openFrontierElement = td3; break; }
+				case 4:{ this.conflictZonesElement = td3; break; }
 				case 5:{ this.survivalElement = td3; break; }
 				default:{ break; }
 			}
 			tr.appendChild(td3);
 
-			//Adding a uline between revenue and strikes
+			//Adding a uline between income and strikes
 			if(i === 3){
 				tr.style.setProperty('border-bottom', `2px solid`);
 
@@ -419,31 +419,31 @@ export class Statusbar{
 		this.empireIntegrityElement.textContent = Statusbar.renderEmpireDevelopmentBars(integrityLevel, 1);
 		
 		//Empire core
-		let ecoreLevel = Statusbar.calculateBarLevel(actualResourceValues.castledNonFrontierRegions, [1, Math.max(TurnSystem.playersSequence.length, 5), 11+TurnSystem.playersSequence.length]);
+		let ecoreLevel = Statusbar.calculateBarLevel(actualResourceValues.empireCore, [1, Math.max(TurnSystem.playersSequence.length, 5), 11+TurnSystem.playersSequence.length]);
 		this.empireCoreElement.textContent = Statusbar.renderEmpireDevelopmentBars(ecoreLevel, 3);
 		
-		//Stable frontier
-		let sfrontLevel;
+		//Calm zones
+		let calmZonesLevel;
 		if(TurnSystem.playersSequence.length > 2){
-			sfrontLevel = Statusbar.calculateBarLevel(actualResourceValues.castledFrontierRegions, [1, 4, 6]);
+			calmZonesLevel = Statusbar.calculateBarLevel(actualResourceValues.calmZones, [1, 4, 6]);
 		}else{
-			sfrontLevel = Statusbar.calculateBarLevel(actualResourceValues.castledFrontierRegions, [1, 5, 8]);
+			calmZonesLevel = Statusbar.calculateBarLevel(actualResourceValues.calmZones, [1, 5, 8]);
 		}
-		this.stableFrontierElement.textContent = Statusbar.renderEmpireDevelopmentBars(sfrontLevel, 3);
+		this.calmZonesElement.textContent = Statusbar.renderEmpireDevelopmentBars(calmZonesLevel, 3);
 		
 		//Contacts
 		let contactLevel;
 		contactLevel = Statusbar.calculateBarLevel(actualResourceValues.enemyNeighbours, [1, 3, 5]);
 		this.contactsElement.textContent = Statusbar.renderEmpireDevelopmentBars(contactLevel, 3);
 		
-		//Open frontier
-		let ofrontLevel;
+		//Conflict zones
+		let conflictZonesLevel;
 		if(TurnSystem.playersSequence.length > 2){
-			ofrontLevel = Statusbar.calculateBarLevel(actualResourceValues.nonCastledRegionsNumber, [1, 4, 6]);
+			conflictZonesLevel = Statusbar.calculateBarLevel(actualResourceValues.conflictZones, [1, 4, 6]);
 		}else{
-			ofrontLevel = Statusbar.calculateBarLevel(actualResourceValues.nonCastledRegionsNumber, [1, 3, 5]);
+			conflictZonesLevel = Statusbar.calculateBarLevel(actualResourceValues.conflictZones, [1, 3, 5]);
 		}
-		this.openFrontierElement.textContent = Statusbar.renderEmpireDevelopmentBars(ofrontLevel, 3);
+		this.conflictZonesElement.textContent = Statusbar.renderEmpireDevelopmentBars(conflictZonesLevel, 3);
 		
 		//Survival - in fact we calculate eliminated ones due to method's comparison
 		let survivalLevel = Statusbar.calculateBarLevel(GameStorage.playersNumber - alivePlayersNumber, [1, 3, 5]);
@@ -494,7 +494,7 @@ export class Statusbar{
 	}
 
 	static renderEmpireDevelopmentBars(number, maximum){
-		let result = '◆ '.repeat(number) + '◇ '.repeat(maximum - number);
+		let result = '★ '.repeat(number) + '☆ '.repeat(maximum - number);
 		return result;
 	}
 }

@@ -38,7 +38,7 @@ export function startMenuWindow(){
 
 	//Initializing Neutral Player lastly
 	const playerNeutral = new Player(GameStorage.playersNumber, 'Neutral player', `player-color-${GameStorage.playersNumber}`, `player-color-text-${GameStorage.playersNumber}`, GameStorage.RGBcolors[GameStorage.playersNumber]);
-	playerNeutral.diceRevenue = 0;
+	playerNeutral.diceIncome = 0;
 	GameStorage.players.push(playerNeutral);
 
 	//Caching resources
